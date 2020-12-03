@@ -36,18 +36,19 @@ fn count_trees(map: &Trees, k: usize, l: usize) -> u64 {
 fn part1() -> Result<(), Box<dyn Error>> {
     let map = get_map()?;
     let trees = count_trees(&map, 3, 1);
-    println!("C: {}", trees);
+    println!("Trees: {}", trees);
     Ok(())
 }
 
 #[test]
 fn part2() -> Result<(), Box<dyn Error>> {
     let map = get_map()?;
-    let slopes = vec![(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
-    let res = slopes
+    let slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
+    let res: u64 = slopes
         .iter()
-        .fold(1, |tot, (k, l)| tot * count_trees(&map, *k, *l));
+        .map(|(k, l)| count_trees(&map, *k, *l))
+        .product();
 
-    println!("C: {}", res);
+    println!("result: {}", res);
     Ok(())
 }
