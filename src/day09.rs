@@ -1,4 +1,5 @@
-use std::{cmp, error::Error, fs::File, io::Read};
+use std::{error::Error, fs::File, io::Read, time::Instant};
+use rayon::prelude::*;
 
 #[test]
 fn part1() -> Result<(), Box<dyn Error>> {
@@ -38,23 +39,26 @@ fn part2() -> Result<(), Box<dyn Error>> {
         .collect();
     let invalid = 400480901;
 
-    let (n, size) = (2..cypher.len())
-        .find_map(|size| {
+    let start = Instant::now();
+
+    let n = (2..cypher.len()).into_par_iter()
+        .find_map_any(|size| {
             for i in 0..(cypher.len() - size) {
                 let slice = &cypher[i..i + size];
                 let sum: u64 = slice.iter().sum();
                 if sum == invalid {
-                    return Some((
+                    return Some(
                         slice.iter().min().unwrap() + slice.iter().max().unwrap(),
-                        size,
-                    ));
+                    );
                 }
             }
             None
         })
         .unwrap();
+    let time = start.elapsed();
+    println!("time: {} us", &time.as_micros());
 
-    println!("N: {} S: {}", n, size);
+    println!("N: {}", n);
 
     Ok(())
 }
@@ -71,34 +75,25 @@ fn part2b() -> Result<(), Box<dyn Error>> {
     let invalid = 400480901;
     let solution: u64 = 67587168;
 
+    let start = Instant::now();
     let mut i = 0;
     let mut j = 2;
-    let mut sol = 0;
     let mut sum = cypher[0] + cypher[1];
-    let mut min = cmp::min(cypher[0],cypher[1]);
-    let mut max = cmp::max(cypher[0],cypher[1]);
     while i < cypher.len() - 2 {
         if sum == invalid {
-            sol = min + max;
             break;
         } else if sum < invalid {
             sum += cypher[j];
             j += 1;
-            min = cmp::min(min, cypher[j]);
-            max = cmp::max(max, cypher[j]);
         } else {
             sum -= cypher[i];
             i += 1;
-            if j - i < 2 {
-                sum += cypher[j];
-                j += 1;
-            }
-            min = *cypher[i..j].iter().min().unwrap();
-            max = *cypher[i..j].iter().max().unwrap();
         }
     }
-
+    let sol = *cypher[i..j].iter().min().unwrap() + *cypher[i..j].iter().max().unwrap();
+    let time = start.elapsed();
     assert_eq!(sol, solution);
+    println!("time: {}", &time.as_nanos());
     println!("S: {}", sol);
 
     Ok(())
