@@ -1,4 +1,4 @@
-use std::{error::Error, fs::File, io::Read};
+use std::{cmp, error::Error, fs::File, io::Read};
 
 #[test]
 fn part1() -> Result<(), Box<dyn Error>> {
@@ -74,19 +74,27 @@ fn part2b() -> Result<(), Box<dyn Error>> {
     let mut i = 0;
     let mut j = 2;
     let mut sol = 0;
+    let mut sum = cypher[0] + cypher[1];
+    let mut min = cmp::min(cypher[0],cypher[1]);
+    let mut max = cmp::max(cypher[0],cypher[1]);
     while i < cypher.len() - 2 {
-        let slice = &cypher[i..j];
-        let sum: u64 = slice.iter().sum();
         if sum == invalid {
-            sol = slice.iter().min().unwrap() + slice.iter().max().unwrap();
+            sol = min + max;
             break;
         } else if sum < invalid {
+            sum += cypher[j];
             j += 1;
+            min = cmp::min(min, cypher[j]);
+            max = cmp::max(max, cypher[j]);
         } else {
+            sum -= cypher[i];
             i += 1;
             if j - i < 2 {
+                sum += cypher[j];
                 j += 1;
             }
+            min = *cypher[i..j].iter().min().unwrap();
+            max = *cypher[i..j].iter().max().unwrap();
         }
     }
 
