@@ -1,5 +1,4 @@
-use itertools::{sorted, Itertools};
-use regex::Regex;
+use itertools::Itertools;
 use std::{error::Error, fs::File, io::BufRead, io::BufReader};
 
 fn get_seats() -> impl Iterator<Item = i32> {

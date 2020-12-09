@@ -1,4 +1,4 @@
-use std::{error::Error, fs::File, io::BufRead, io::BufReader};
+use std::{fs::File, io::BufRead, io::BufReader};
 
 use regex::Regex;
 #[derive(Default, Debug)]

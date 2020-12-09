@@ -1,4 +1,4 @@
-use std::{convert::TryInto, error::Error, fs::File, io::BufRead, io::BufReader, io::Read};
+use std::{convert::TryInto, error::Error, fs::File, io::BufRead, io::BufReader};
 
 #[derive(Debug, Copy, Clone)]
 enum Instr {
@@ -49,7 +49,6 @@ fn execute(program: Program) -> (bool, i64) {
             Instr::Acc(c) => acc += c,
             Instr::Jmp(c) => jmp = *c,
             Instr::Nop(_) => (),
-            _ => panic!("Invalid instruction"),
         }
         pointer = (pointer as i64 + jmp).try_into().unwrap();
     }
