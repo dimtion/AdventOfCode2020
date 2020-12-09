@@ -58,3 +58,40 @@ fn part2() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
+#[test]
+fn part2b() -> Result<(), Box<dyn Error>> {
+    let mut file = File::open("data/day09.txt").unwrap();
+    let mut raw_input = String::new();
+    file.read_to_string(&mut raw_input).unwrap();
+    let cypher: Vec<u64> = raw_input
+        .lines()
+        .map(|line| line.parse().unwrap())
+        .collect();
+    let invalid = 400480901;
+    let solution: u64 = 67587168;
+
+    let mut i = 0;
+    let mut j = 2;
+    let mut sol = 0;
+    while i < cypher.len() - 2 {
+        let slice = &cypher[i..j];
+        let sum: u64 = slice.iter().sum();
+        if sum == invalid {
+            sol = slice.iter().min().unwrap() + slice.iter().max().unwrap();
+            break;
+        } else if sum < invalid {
+            j += 1;
+        } else {
+            i += 1;
+            if j - i < 2 {
+                j += 1;
+            }
+        }
+    }
+
+    assert_eq!(sol, solution);
+    println!("S: {}", sol);
+
+    Ok(())
+}
