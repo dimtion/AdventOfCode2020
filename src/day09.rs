@@ -1,5 +1,5 @@
-use std::{error::Error, fs::File, io::Read, time::Instant};
 use rayon::prelude::*;
+use std::{error::Error, fs::File, io::Read, time::Instant};
 
 #[test]
 fn part1() -> Result<(), Box<dyn Error>> {
@@ -41,15 +41,14 @@ fn part2() -> Result<(), Box<dyn Error>> {
 
     let start = Instant::now();
 
-    let n = (2..cypher.len()).into_par_iter()
+    let n = (2..cypher.len())
+        .into_par_iter()
         .find_map_any(|size| {
             for i in 0..(cypher.len() - size) {
                 let slice = &cypher[i..i + size];
                 let sum: u64 = slice.iter().sum();
                 if sum == invalid {
-                    return Some(
-                        slice.iter().min().unwrap() + slice.iter().max().unwrap(),
-                    );
+                    return Some(slice.iter().min().unwrap() + slice.iter().max().unwrap());
                 }
             }
             None
